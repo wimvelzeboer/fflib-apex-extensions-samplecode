@@ -32,7 +32,7 @@ public with sharing class Accounts
 		extends SObjects
 		implements IAccounts
 {
-    // Class constructor
+	// Class constructor
 	@TestVisible
 	private Accounts(List<SObject> records)
 	{

@@ -48,7 +48,7 @@ public with sharing class AccountsTriggerHandler extends fflib_SObjectDomain
 
 	private void onChangedCountryCopyValueToContacts()
 	{
-		List<SObject> changedRecords = getChangedRecords(new Set<SObjectField> {Schema.Account.ShippingCountry });
+		List<SObject> changedRecords = getChangedRecords(new Set<SObjectField> {Schema.Account.ShippingCountry});
 
 		if (changedRecords.isEmpty()) return;
 

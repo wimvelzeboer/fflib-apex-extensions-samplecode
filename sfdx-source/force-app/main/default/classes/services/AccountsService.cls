@@ -30,7 +30,9 @@
  */
 public with sharing class AccountsService
 {
-	private AccountsService() {}
+	private AccountsService()
+	{
+	}
 
 	public static void copyShippingCountryToContacts(Set<Id> accountIds)
 	{

@@ -37,18 +37,18 @@ public with sharing class AccountViewController
 		this.accountRecord = (Account) stdController.getRecord();
 	}
 
-    public PageReference onRecalculateRatingButtonClick()
-    {
-        System.Savepoint savePoint = Database.setSavepoint();
-        try
-        {
-            AccountsService.recalculateRating(new List<Account> { this.accountRecord });
-        }
-        catch (Exception e)
-        {
-            Database.rollback(savePoint);
-            ApexPages.addMessages(e);
-        }
-        return null;
-    }
+	public PageReference onRecalculateRatingButtonClick()
+	{
+		System.Savepoint savePoint = Database.setSavepoint();
+		try
+		{
+			AccountsService.recalculateRating(new List<Account> {this.accountRecord});
+		}
+		catch (Exception e)
+		{
+			Database.rollback(savePoint);
+			ApexPages.addMessages(e);
+		}
+		return null;
+	}
 }

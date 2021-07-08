@@ -113,7 +113,7 @@ public virtual inherited sharing class ContactsSelector
 	 *
 	 * @example
 	 *     List<Contact> records = ContactsSelector().newInstance()
-     *                                .selectByAccountId( accountIds );
+	 *                                .selectByAccountId( accountIds );
 	 *
 	 * Generated the following query:
 	 * ------------------------------
@@ -145,7 +145,7 @@ public virtual inherited sharing class ContactsSelector
 	 *
 	 * Set<String> leadSources = new Set<String>{ 'Email' }
 	 * List<Contact> records = ContactsSelector().newInstance()
-     *                                .selectByLeadSource( leadSources );
+	 *                                .selectByLeadSource( leadSources );
 	 *
 	 * Generated the following query:
 	 * ------------------------------
@@ -226,8 +226,8 @@ public virtual inherited sharing class ContactsSelector
 
 		((fflib_SObjectSelector) CasesSelector.newInstance())
 				.addQueryFactorySubselect(
-						queryFactory,
-						'Case'
+				queryFactory,
+				'Case'
 
 		);
 
@@ -260,7 +260,7 @@ public virtual inherited sharing class ContactsSelector
 		List<Contact> result = (List<Contact>) Database.query(
 				newQueryFactory(false)
 						.selectFields(getSObjectPartnerFieldList())
-				        .setCondition('Id in :idSet AND RecordType.Name=\'Partner\'')
+						.setCondition('Id in :idSet AND RecordType.Name=\'Partner\'')
 						.toSOQL()
 		);
 
@@ -269,7 +269,7 @@ public virtual inherited sharing class ContactsSelector
 
 	/**
 	 * Sub class construct to instantiate a selectors with CRUD and FLS sharing enforced
-	 *
+	 * <p/>
 	 * The methods in this class only override all the selectors methods and invoke its super,
 	 * so that the logic is execute in the "with sharing" context.
 	 */
@@ -318,7 +318,7 @@ public virtual inherited sharing class ContactsSelector
 
 	/**
 	 * Sub class construct to instantiate a selectors that is run without any sharing rules
-	 *
+	 * <p/>
 	 * The methods in this class only override all the selectors methods and invoke its super,
 	 * so that the logic is execute in the "without sharing" context.
 	 */

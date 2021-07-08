@@ -32,7 +32,7 @@
 global with sharing class AccountRatingWebService
 {
 
-    /**
+	/**
 	 * Gets the account rating for the given account Id
 	 *
 	 * @return Instance of ResponseBody containing the Account Ratings grouped by AccountId
@@ -48,11 +48,11 @@ global with sharing class AccountRatingWebService
 		}
 		catch (Exception e)
 		{
-            return new ResponseBody(
-		            new ErrorResponse(
-				            e.getMessage()
-		            )
-            );
+			return new ResponseBody(
+					new ErrorResponse(
+							e.getMessage()
+					)
+			);
 		}
 	}
 
@@ -103,7 +103,7 @@ global with sharing class AccountRatingWebService
 		public Set<Id> AccountIds { get; set; }
 	}
 
-    /**
+	/**
 	 * The response body for the GET request
 	 */
 	global class ResponseBody
@@ -147,12 +147,11 @@ global with sharing class AccountRatingWebService
 	{
 		public String ErrorMessage { get; set; }
 
-        public ErrorResponse(String message)
-        {
-            this.ErrorMessage = message;
-        }
+		public ErrorResponse(String message)
+		{
+			this.ErrorMessage = message;
+		}
 	}
 
-	public class DeveloperException extends Exception {	}
-
+	public class DeveloperException extends Exception {}
 }
