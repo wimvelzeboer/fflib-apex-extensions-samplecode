@@ -15,6 +15,12 @@ A full overview of all the features in fflib-apex-extensions can be found in
 ## Installation
 Use the following installation instructions for downloading the examples and installing them into a Scratch Org.
 
+Before you start you need to have the 
+[SFDX CLI installed](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_install_cli.htm)
+which is authorised to a DevHub envirionment. Have a look at this 
+[Trailhead](https://trailhead.salesforce.com/en/content/learn/modules/sfdx_app_dev/sfdx_app_dev_setup_dx)
+if you need assistance for doing this.
+
 1. Download a copy of this repository
 ```shell
 git clone https://github.com/wimvelzeboer/fflib-apex-extensions-samplecode.git
