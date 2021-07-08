@@ -8,9 +8,14 @@ These samples are dependent on the following packages:
 - [fflib-apex-common](https://github.com/apex-enterprise-patterns/fflib-apex-common)
 - [fflib-apex-extensions](https://github.com/wimvelzeboer/fflib-apex-extensions)
 
-## Wiki
-A full overview of all the features in fflib-apex-extensions can be found in 
-[these Wiki pages](https://github.com/wimvelzeboer/fflib-apex-extensions/wiki).
+## Documentation
+Do have a look at the
+[Wiki pages](https://github.com/wimvelzeboer/fflib-apex-extensions/wiki)
+for a full overview of all the features in fflib-apex-extensions,
+or have a look at the  
+[Method Reference](https://github.com/wimvelzeboer/fflib-apex-extensions/blob/main/docs/README.asciidoc)
+documentation with explanations for all the methods.
+
 
 ## Installation
 Use the following installation instructions for downloading the examples and installing them into a Scratch Org.
@@ -50,14 +55,5 @@ After execution, check the listed configuration values and enter "YES" to confir
 ```
 
 Have fun looking at the code and learning the patterns!
-
-## Documentation
-Do have a look at the 
-[Wiki pages](https://github.com/wimvelzeboer/fflib-apex-extensions/wiki)
-for a full overview of all the features in fflib-apex-extensions, 
-or have a look at the  
-[Method Reference](https://github.com/wimvelzeboer/fflib-apex-extensions/blob/main/docs/README.asciidoc)
-documentation with explanations for all the methods.
-
 
 
