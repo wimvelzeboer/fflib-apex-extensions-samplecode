@@ -1,6 +1,6 @@
 # fflib-apex-extensions Sample Code
-Sample for the 
-[fflib-apex-extensions](https://github.com/wimvelzeboer/fflib-apex-extensions/wiki).fflib-apex-extensions Library.  
+This repository contains a sample application based on the 
+[fflib-apex-extensions](https://github.com/wimvelzeboer/fflib-apex-extensions/wiki) package.  
 
 **Dependencies:**<br/>
 These samples are dependent on the following packages:
