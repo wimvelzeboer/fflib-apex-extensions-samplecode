@@ -1,6 +1,5 @@
 /**
- * File Name: MyWebService
- * Description:
+ * File Name: ISecurityService 
  *
  * @author architect ir. Wilhelmus G.J. Velzeboer
  *
@@ -28,69 +27,8 @@
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public with sharing class AccountsService
+public interface ISecurityService
 {
-	private AccountsService()
-	{
-	}
-
-	public static void copyShippingCountryToContacts(Set<Id> accountIds)
-	{
-		service().copyShippingCountryToContacts(accountIds);
-	}
-
-	public static void copyShippingCountryToContacts(List<Account> records)
-	{
-		service().copyShippingCountryToContacts(records);
-	}
-
-	public static void copyShippingCountryToContacts(IAccounts accounts)
-	{
-		service().copyShippingCountryToContacts(accounts);
-	}
-
-	public static void copyShippingCountryToContacts(fflib_ISObjectUnitOfWork unitOfWork, IAccounts accounts)
-	{
-		service().copyShippingCountryToContacts(unitOfWork, accounts);
-	}
-
-	public static void recalculateRating(Set<Id> accountIds)
-	{
-		service().recalculateRating(accountIds);
-	}
-
-	public static void recalculateRating(List<Account> records)
-	{
-		service().recalculateRating(records);
-	}
-
-	public static void recalculateRating(IAccounts accounts)
-	{
-		service().recalculateRating(accounts);
-	}
-
-	public static void setRating(Set<Id> ids, String rating)
-	{
-		service().setRating(ids, rating);
-	}
-
-	public void setRating(List<Account> records, String rating)
-	{
-		service().setRating(records, rating);
-	}
-
-	public void setRating(IAccounts accounts, String rating)
-	{
-		service().setRating(accounts, rating);
-	}
-
-	public void setRating(fflib_ISObjectUnitOfWork unitOfWork, IAccounts accounts, String rating)
-	{
-		service().setRating(unitOfWork, accounts, rating);
-	}
-
-	private static IAccountsService service()
-	{
-		return (IAccountsService) Application.Service.newInstance(IAccountsService.class);
-	}
+	void assertHasSObjectReadAccess(Schema.SObjectType sObjectType);
+	void assertHasRecordAccess(Id id);
 }

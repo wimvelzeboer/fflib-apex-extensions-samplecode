@@ -39,4 +39,9 @@ public interface IAccountsService
 	void recalculateRating(List<Account> records);
 	void recalculateRating(IAccounts accounts);
 	void recalculateRating(fflib_ISObjectUnitOfWork unitOfWork, IAccounts accounts);
+
+	void setRating(Set<Id> ids, String rating);
+	void setRating(List<Account> records, String rating);
+	void setRating(IAccounts accounts, String rating);
+	void setRating(fflib_ISObjectUnitOfWork unitOfWork, IAccounts accounts, String rating);
 }

@@ -83,14 +83,39 @@ public with sharing class AccountsServiceImpl
 
 	public void recalculateRating(fflib_ISObjectUnitOfWork unitOfWork, IAccounts accounts)
 	{
-		accounts.selectByNumberOfEmployeesGreaterThan(99)
-				.setRating('Hot');
+		setRating(
+				unitOfWork,
+				accounts.selectByNumberOfEmployeesGreaterThan(99),
+				'Hot');
 
-		accounts.selectByNumberOfEmployeesLessThan(100)
-				.setRating('Warm');
+		setRating(
+				unitOfWork,
+				accounts.selectByNumberOfEmployeesLessThan(100),
+				'Warm');
+	}
 
+	public void setRating(Set<Id> ids, String rating)
+	{
+		setRating(Accounts.newInstance(ids), rating);
+	}
+
+	public void setRating(List<Account> records, String rating)
+	{
+		setRating(Accounts.newInstance(records), rating);
+	}
+
+	public void setRating(IAccounts accounts, String rating)
+	{
+		fflib_ISObjectUnitOfWork unitOfWork = Application.UnitOfWork.newInstance();
+		setRating(unitOfWork, accounts, rating);
+		unitOfWork.commitWork();
+	}
+
+	public void setRating(fflib_ISObjectUnitOfWork unitOfWork, IAccounts accounts, String rating)
+	{
 		unitOfWork.registerDirty(
-				accounts.getRecords()
+			accounts.setRating(rating)
+				.getRecords()
 		);
 	}
 }

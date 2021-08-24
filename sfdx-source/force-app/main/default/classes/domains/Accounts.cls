@@ -42,18 +42,23 @@ public with sharing class Accounts
 	// Method to create new domain instances via record Ids
 	public static IAccounts newInstance(Set<Id> ids)
 	{
-		return (IAccounts) Application.Domain.newInstance(ids);
+		return (IAccounts) Application.Domain.newInstance(ids, Schema.Account.SObjectType);
 	}
 
 	// Method to create new domain instances via records
 	public static IAccounts newInstance(List<SObject> records)
 	{
-		return (IAccounts) Application.Domain.newInstance(records, Schema.Account.sObjectType);
+		return (IAccounts) Application.Domain.newInstance(records, Schema.Account.SObjectType);
 	}
 
 	public List<Account> getAccounts()
 	{
 		return (List<Account>) getRecords();
+	}
+
+	public Strings getRating()
+	{
+		return getStringFieldValues(Schema.Account.Rating);
 	}
 
 	public Set<String> getShippingCountries()
@@ -115,12 +120,13 @@ public with sharing class Accounts
 		return (IAccounts) new Accounts(result);
 	}
 
-	public void setRating(String value)
+	public IAccounts setRating(String value)
 	{
 		for (Account record : getAccounts())
 		{
 			record.Rating = value;
 		}
+		return this;
 	}
 
 	// Sub-class constructor

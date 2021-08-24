@@ -42,7 +42,7 @@ public with sharing class Contacts
 	// Method to create new domain instances via record Ids
 	public static IContacts newInstance(Set<Id> ids)
 	{
-		return (IContacts) Application.Domain.newInstance(ids);
+		return (IContacts) Application.Domain.newInstance(ids, Schema.Contact.SObjectType);
 	}
 
 	// Method to create new domain instances via records

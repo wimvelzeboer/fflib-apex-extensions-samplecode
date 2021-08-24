@@ -1,6 +1,6 @@
 /**
  * File Name: AccountViewController 
- * Description: 
+ * Description: VisualForce Controller Extension
  *
  * @author architect ir. Wilhelmus G.J. Velzeboer
  *
@@ -42,6 +42,10 @@ public with sharing class AccountViewController
 		System.Savepoint savePoint = Database.setSavepoint();
 		try
 		{
+			// Assert that the user has access to the Object
+			fflib_SecurityUtils.checkObjectIsUpdateable(Schema.Account.SObjectType);
+
+			// Invoke service method
 			AccountsService.recalculateRating(new List<Account> {this.accountRecord});
 		}
 		catch (Exception e)
