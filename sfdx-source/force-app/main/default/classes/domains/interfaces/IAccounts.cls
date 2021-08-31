@@ -31,13 +31,14 @@
 public interface IAccounts extends fflib_ISObjects
 {
 	List<Account> getAccounts();
-	IAccounts setRating(String value);
+	Strings getRating();
 	Set<String> getShippingCountries();
+	Map<Id, String> getShippingCountryById();
+
 	IAccounts selectByNumberOfEmployeesGreaterThan(Integer amount);
 	IAccounts selectByNumberOfEmployeesLessThan(Integer amount);
 	IAccounts recalculateRating();
 
-	Map<Id, String> getShippingCountryById();
-
-	Strings getRating();
+	IAccounts setRating(String value);
+	IAccounts setRatingById(Map<Id, String> ratingById);
 }

@@ -59,4 +59,11 @@ public virtual with sharing class AccountsSelector
 	{
 		return (List<Account>) selectSObjectsById(idSet);
 	}
+
+	public Database.QueryLocator queryLocatorAll()
+	{
+		return Database.getQueryLocator(
+				newQueryFactory().toSOQL()
+		);
+	}
 }

@@ -28,65 +28,176 @@
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-@RestResource(urlMapping='/AccountRating')
+@RestResource(UrlMapping='/AccountRating/v1.0/*')
 global with sharing class AccountRatingWebService
 {
+	private static final SObjectType ACCOUNT_SOBJECT_TYPE = Schema.Account.SObjectType;
+	private static final String CRUD_ERROR_MESSAGE = 'Not Authorised to access Accounts';
+	private static final String FLS_ERROR_MESSAGE = 'Not Authorised to access Account Rating data';
+	private static final String INVALID_FORMATTED_REQUEST = 'Invalid formatted request';
+	private static final String UNHANDLED_EXCEPTION_OCCURRED = 'Unhandled exception occurred';
 
 	/**
 	 * Gets the account rating for the given account Id
-	 *
-	 * @return Instance of ResponseBody containing the Account Ratings grouped by AccountId
 	 */
 	@HttpGet
-	global static ResponseBody doGet()
+	global static void doGet()
 	{
 		try
 		{
-			RequestBody request = getRequestBody();
+			// Retrieve sanitised request body
+			GetRequestBody request = getGetRequestBody();
+
+			// Validate that the user has the proper access
+			fflib_SecurityUtils.checkObjectIsReadable(ACCOUNT_SOBJECT_TYPE);
+			fflib_SecurityUtils.checkFieldIsReadable(ACCOUNT_SOBJECT_TYPE, Schema.Account.Rating);
+
+			// Get the required data
 			IAccounts accounts = Accounts.newInstance(request.AccountIds);
-			return new ResponseBody(accounts);
+
+			// Translate, filter and return the data
+			RestContext.response.responseBody = new GetResponseBody(accounts).toBlob();
+			RestContext.response.statusCode = 200;
+		}
+		// Unauthorised to SObject
+		catch (fflib_SecurityUtils.CrudException e)
+		{
+			RestContext.response.statusCode = 401;
+			RestContext.response.responseBody = new ErrorResponse(CRUD_ERROR_MESSAGE).toBlob();
+		}
+		// Unauthorised to Field
+		catch (fflib_SecurityUtils.FlsException e)
+		{
+			RestContext.response.statusCode = 401;
+			RestContext.response.responseBody = new ErrorResponse(FLS_ERROR_MESSAGE).toBlob();
+		}
+		// JSON formatting error
+		catch (System.JSONException e)
+		{
+			RestContext.response.statusCode = 400;
+			RestContext.response.responseBody = new ErrorResponse(INVALID_FORMATTED_REQUEST).toBlob();
 		}
 		catch (Exception e)
 		{
-			return new ResponseBody(
-					new ErrorResponse(
-							e.getMessage()
-					)
-			);
+			RestContext.response.statusCode = 400;
+			RestContext.response.responseBody = new ErrorResponse(UNHANDLED_EXCEPTION_OCCURRED).toBlob();
 		}
 	}
 
 	/**
-	 * Posts a request to recalculate the Rating and return the updated values
-	 *
-	 * @return Instance of ResponseBody containing the updated Account Ratings grouped by AccountId
+	 * Put request update an existing record
 	 */
-	@HttpPost
-	global static ResponseBody doPost()
+	@HttpPut
+	global static void doPut()
 	{
 		try
 		{
-			RequestBody request = getRequestBody();
-			IAccounts accounts = Accounts.newInstance(request.AccountIds);
-			AccountsService.recalculateRating(accounts);
-			return new ResponseBody(accounts);
+			// Retrieve sanitised request body
+			PutRequestBody request = getPutRequestBody();
+
+			// Validate that the user has the proper access
+			fflib_SecurityUtils.checkObjectIsReadable(ACCOUNT_SOBJECT_TYPE);
+			fflib_SecurityUtils.checkFieldIsReadable(ACCOUNT_SOBJECT_TYPE, Schema.Account.Rating);
+
+			// Retrieve the records and update the fields
+			IAccounts accounts = Accounts.newInstance(request.getAccountIds());
+			accounts.setRatingById(request.getRatingById());
+
+			// Send changes to the database
+			fflib_ISObjectUnitOfWork unitOfWork = Application.UnitOfWork.newInstance(
+					new List<SObjectType>{ Account.SObjectType}
+			);
+			unitOfWork.registerDirty(accounts.getRecords());
+			unitOfWork.commitWork();
+
+			// Return a success response
+			RestContext.response.statusCode = 200;
+		}
+		// Unauthorised to SObject
+		catch (fflib_SecurityUtils.CrudException e)
+		{
+			RestContext.response.statusCode = 401;
+			RestContext.response.responseBody = new ErrorResponse(CRUD_ERROR_MESSAGE).toBlob();
+		}
+		// Unauthorised to Field
+		catch (fflib_SecurityUtils.FlsException e)
+		{
+			RestContext.response.statusCode = 401;
+			RestContext.response.responseBody = new ErrorResponse(FLS_ERROR_MESSAGE).toBlob();
+		}
+		// JSON formatting error
+		catch (System.JSONException e)
+		{
+			RestContext.response.statusCode = 400;
+			RestContext.response.responseBody = new ErrorResponse(INVALID_FORMATTED_REQUEST).toBlob();
 		}
 		catch (Exception e)
 		{
-			return new ResponseBody(
-					new ErrorResponse(
-							e.getMessage()
-					)
-			);
+			RestContext.response.statusCode = 400;
+			RestContext.response.responseBody = new ErrorResponse(e.getMessage()).toBlob();
 		}
 	}
 
-	private static RequestBody getRequestBody()
+	/**
+	 * Delete request to remove Rating data from existing records
+	 */
+	@HttpDelete
+	global static void doDelete()
+	{
+		try
+		{
+			// Retrieve sanitised request body
+			DeleteRequestBody request = getDeleteRequestBody();
+
+			// Validate that the user has the proper access
+			fflib_SecurityUtils.checkObjectIsReadable(ACCOUNT_SOBJECT_TYPE);
+			fflib_SecurityUtils.checkFieldIsReadable(ACCOUNT_SOBJECT_TYPE, Schema.Account.Rating);
+
+			// Retrieve the records and update the fields
+			IAccounts accounts = Accounts.newInstance(request.accountIds);
+			accounts.setRating(null);
+
+			// Send changes to the database
+			fflib_ISObjectUnitOfWork unitOfWork = Application.UnitOfWork.newInstance(
+					new List<SObjectType>{ Account.SObjectType}
+			);
+			unitOfWork.registerDirty(accounts.getRecords());
+			unitOfWork.commitWork();
+
+			// Return a success response
+			RestContext.response.statusCode = 200;
+		}
+		// Unauthorised to SObject
+		catch (fflib_SecurityUtils.CrudException e)
+		{
+			RestContext.response.statusCode = 401;
+			RestContext.response.responseBody = new ErrorResponse(CRUD_ERROR_MESSAGE).toBlob();
+		}
+		// Unauthorised to Field
+		catch (fflib_SecurityUtils.FlsException e)
+		{
+			RestContext.response.statusCode = 401;
+			RestContext.response.responseBody = new ErrorResponse(FLS_ERROR_MESSAGE).toBlob();
+		}
+		// JSON formatting error
+		catch (System.JSONException e)
+		{
+			RestContext.response.statusCode = 400;
+			RestContext.response.responseBody = new ErrorResponse(INVALID_FORMATTED_REQUEST).toBlob();
+		}
+		catch (Exception e)
+		{
+			RestContext.response.statusCode = 400;
+			RestContext.response.responseBody = new ErrorResponse(e.getMessage()).toBlob();
+		}
+	}
+
+	private static DeleteRequestBody getDeleteRequestBody()
 	{
 		try
 		{
 			RestRequest restRequest = RestContext.request;
-			return (RequestBody) JSON.deserialize(restRequest.requestBody.toString(), RequestBody.class);
+			return (DeleteRequestBody) JSON.deserialize(restRequest.requestBody.toString(), DeleteRequestBody.class);
 		}
 		catch (Exception e)
 		{
@@ -95,39 +206,115 @@ global with sharing class AccountRatingWebService
 		}
 	}
 
-	/**
-	 * The
-	 */
-	public class RequestBody
+	private static GetRequestBody getGetRequestBody()
+	{
+		try
+		{
+			RestRequest restRequest = RestContext.request;
+			return (GetRequestBody) JSON.deserialize(restRequest.requestBody.toString(), GetRequestBody.class);
+		}
+		catch (Exception e)
+		{
+			// Maybe add here some extra error logging to capture the stack-trace.
+			throw new DeveloperException('Unable to process request body: ' + e.getMessage());
+		}
+	}
+
+	private static PutRequestBody getPutRequestBody()
+	{
+		try
+		{
+			// Get the REST Request
+			RestRequest restRequest = RestContext.request;
+
+			// Convert it to the data type PutRequestBody
+			AccountRatingWebService.PutRequestBody requestBody =
+					(PutRequestBody) JSON.deserialize(restRequest.requestBody.toString(), PutRequestBody.class);
+
+			// Sanitised the data to prevent hacks
+			requestBody.sanitise();
+
+			// Return the clean and valid data
+			return requestBody;
+		}
+		catch (Exception e)
+		{
+			// Maybe add here some extra error logging to capture the stack-trace.
+			throw new DeveloperException('Unable to process request body: ' + e.getMessage());
+		}
+	}
+
+	public virtual class AccountIdsInfo
 	{
 		public Set<Id> AccountIds { get; set; }
 	}
 
-	/**
-	 * The response body for the GET request
-	 */
-	global class ResponseBody
-	{
-		public Boolean Success { get; set; }
-		public List<AccountRating> accountRatings { get; set; }
-		public ErrorResponse errorResponse { get; set; }
+	public class GetRequestBody extends AccountIdsInfo {}
+	public class DeleteRequestBody extends AccountIdsInfo {}
 
-		public ResponseBody(IAccounts accounts)
+	global virtual class AccountRatingInfo
+	{
+		public List<AccountRating> AccountRatings { get; set; }
+
+		public AccountRatingInfo(IAccounts accounts)
 		{
-			this.Success = true;
-			this.accountRatings = new List<AccountRating>();
+			this.AccountRatings = new List<AccountRating>();
 			for (Account record : accounts.getAccounts())
 			{
-				this.accountRatings.add(
+				this.AccountRatings.add(
 						new AccountRating(record)
 				);
 			}
 		}
 
-		public ResponseBody(ErrorResponse error)
+		public void sanitise()
 		{
-			this.Success = false;
-			this.errorResponse = error;
+			for (AccountRating record : AccountRatings)
+			{
+				record.sanitise();
+			}
+		}
+
+		public Blob toBlob()
+		{
+			return Blob.valueOf(JSON.serialize(this));
+		}
+	}
+
+	global class GetResponseBody extends AccountRatingInfo
+	{
+		public GetResponseBody(IAccounts accounts)
+		{
+			super(accounts);
+		}
+	}
+
+
+	global class PutRequestBody extends AccountRatingInfo
+	{
+		public PutRequestBody(IAccounts accounts)
+		{
+			super(accounts);
+		}
+
+		public Set<Id> getAccountIds()
+		{
+			Set<Id> result = new Set<Id>();
+			for (AccountRating record : AccountRatings)
+			{
+				result.add(record.AccountId);
+			}
+			return result;
+		}
+
+		public Map<Id, String> getRatingById()
+		{
+			Map<Id, String> result = new Map<Id, String>();
+			for (AccountRating record : AccountRatings)
+			{
+				result.put(record.AccountId, record.Rating);
+			}
+			return result;
 		}
 	}
 
@@ -141,6 +328,11 @@ global with sharing class AccountRatingWebService
 			this.AccountId = record.Id;
 			this.Rating = record.Rating;
 		}
+
+		public void sanitise()
+		{
+			this.Rating = String.escapeSingleQuotes(this.Rating);
+		}
 	}
 
 	public class ErrorResponse
@@ -150,6 +342,11 @@ global with sharing class AccountRatingWebService
 		public ErrorResponse(String message)
 		{
 			this.ErrorMessage = message;
+		}
+
+		public Blob toBlob()
+		{
+			return Blob.valueOf(JSON.serialize(this));
 		}
 	}
 

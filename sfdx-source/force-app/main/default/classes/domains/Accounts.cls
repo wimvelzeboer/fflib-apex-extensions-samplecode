@@ -129,6 +129,18 @@ public with sharing class Accounts
 		return this;
 	}
 
+	public IAccounts setRatingById(Map<Id, String> ratingById)
+	{
+		for (Account record : getAccounts())
+		{
+			if (ratingById.containsKey(record.Id))
+			{
+				record.Rating = ratingById.get(record.Id);
+			}
+		}
+		return this;
+	}
+
 	// Sub-class constructor
 	public class Constructor implements fflib_IDomainConstructor
 	{
