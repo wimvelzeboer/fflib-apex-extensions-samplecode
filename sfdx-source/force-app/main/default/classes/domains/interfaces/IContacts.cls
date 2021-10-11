@@ -30,5 +30,6 @@
  */
 public interface IContacts extends fflib_ISObjects
 {
+	List<Contact> getContacts();
 	void setMailingCountryByAccountId(Map<Id, String> stringsByIds);
 }

@@ -31,7 +31,7 @@
 public interface IAccounts extends fflib_ISObjects
 {
 	List<Account> getAccounts();
-	Strings getRating();
+	fflib_Strings getRating();
 	Set<String> getShippingCountries();
 	Map<Id, String> getShippingCountryById();
 

@@ -29,7 +29,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public with sharing class Accounts
-		extends SObjects
+		extends fflib_SObjects2
 		implements IAccounts
 {
 	// Class constructor
@@ -56,7 +56,7 @@ public with sharing class Accounts
 		return (List<Account>) getRecords();
 	}
 
-	public Strings getRating()
+	public fflib_Strings getRating()
 	{
 		return getStringFieldValues(Schema.Account.Rating);
 	}

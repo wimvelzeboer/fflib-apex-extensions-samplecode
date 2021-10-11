@@ -33,30 +33,47 @@ public with sharing class AccountsServiceImpl
 {
 	public void copyShippingCountryToContacts(Set<Id> accountIds)
 	{
-		copyShippingCountryToContacts(Accounts.newInstance(accountIds));
+		copyShippingCountryToContacts(
+				(IAccounts) Application.Domain.newInstance(accountIds, Schema.Account.SObjectType)
+		);
 	}
 
 	public void copyShippingCountryToContacts(List<Account> records)
 	{
-		copyShippingCountryToContacts(Accounts.newInstance(records));
+		copyShippingCountryToContacts(
+				(IAccounts) Application.Domain.newInstance(records, Schema.Account.SObjectType)
+		);
+	}
+
+	public void copyShippingCountryToContacts(List<Account> accounts, List<Contact> contacts)
+	{
+		copyShippingCountryToContacts(
+				(IAccounts) Application.Domain.newInstance(accounts, Schema.Account.SObjectType),
+				(IContacts) Application.Domain.newInstance(contacts, Schema.Contact.SObjectType)
+		);
 	}
 
 	public void copyShippingCountryToContacts(IAccounts accounts)
 	{
+		copyShippingCountryToContacts(accounts, getContacts(accounts));
+	}
+
+	public void copyShippingCountryToContacts(IAccounts accounts, IContacts contacts)
+	{
 		fflib_ISObjectUnitOfWork unitOfWork = Application.UnitOfWork.newInstance();
-		copyShippingCountryToContacts(unitOfWork, accounts);
+		copyShippingCountryToContacts(unitOfWork, accounts, contacts);
 		unitOfWork.commitWork();
 	}
 
 	public void copyShippingCountryToContacts(fflib_ISObjectUnitOfWork unitOfWork, IAccounts accounts)
 	{
-		Map<Id, String> shippingCountryByAccountId = accounts.getShippingCountryById();
-		Set<Id> accountIds = accounts.getRecordIds();
-		IContacts contacts = Contacts.newInstance(
-				ContactsSelector.newInstance().selectByAccountId(accountIds)
-		);
-		contacts.setMailingCountryByAccountId(shippingCountryByAccountId);
+		copyShippingCountryToContacts(unitOfWork, accounts, getContacts(accounts));
+	}
 
+	public void copyShippingCountryToContacts(fflib_ISObjectUnitOfWork unitOfWork, IAccounts accounts, IContacts contacts)
+	{
+		Map<Id, String> shippingCountryByAccountId = accounts.getShippingCountryById();
+		contacts.setMailingCountryByAccountId(shippingCountryByAccountId);
 		unitOfWork.registerDirty(contacts.getRecords());
 	}
 
@@ -116,6 +133,16 @@ public with sharing class AccountsServiceImpl
 		unitOfWork.registerDirty(
 			accounts.setRating(rating)
 				.getRecords()
+		);
+	}
+
+
+	private IContacts getContacts(IAccounts accounts)
+	{
+		return (IContacts) Application.Domain.newInstance(
+				((IContactsSelector) Application.Selector.newInstance(Schema.Contact.SObjectType))
+						.selectByAccountId(accounts.getRecordIds()),
+				Schema.Contact.SObjectType
 		);
 	}
 }

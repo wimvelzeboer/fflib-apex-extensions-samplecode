@@ -29,7 +29,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public with sharing class Contacts
-		extends SObjects
+		extends fflib_SObjects2
 		implements IContacts
 {
 	// Class constructor

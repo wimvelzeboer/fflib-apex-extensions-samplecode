@@ -1,5 +1,5 @@
 /**
- * File Name: IAccountsService 
+ * File Name: RecalculateRatingBatch 
  * Description: 
  *
  * @author architect ir. Wilhelmus G.J. Velzeboer
@@ -28,23 +28,24 @@
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public interface IAccountsService
+public class RecalculateRatingBatch implements Database.Batchable<SObject>
 {
-	void copyShippingCountryToContacts(Set<Id> idSet);
-	void copyShippingCountryToContacts(List<Account> records);
-	void copyShippingCountryToContacts(List<Account> records, List<Contact> contacts);
-	void copyShippingCountryToContacts(IAccounts accounts);
-	void copyShippingCountryToContacts(IAccounts accounts, IContacts contacts);
-	void copyShippingCountryToContacts(fflib_ISObjectUnitOfWork unitOfWork, IAccounts accounts);
-	void copyShippingCountryToContacts(fflib_ISObjectUnitOfWork unitOfWork, IAccounts accounts, IContacts contacts);
+	private static final Integer SCOPE_SIZE = 200;
 
-	void recalculateRating(Set<Id> accountIds);
-	void recalculateRating(List<Account> records);
-	void recalculateRating(IAccounts accounts);
-	void recalculateRating(fflib_ISObjectUnitOfWork unitOfWork, IAccounts accounts);
+	public static Id execute()
+	{
+		return Database.executeBatch(new RecalculateRatingBatch(), SCOPE_SIZE);
+	}
 
-	void setRating(Set<Id> ids, String rating);
-	void setRating(List<Account> records, String rating);
-	void setRating(IAccounts accounts, String rating);
-	void setRating(fflib_ISObjectUnitOfWork unitOfWork, IAccounts accounts, String rating);
+	public Database.QueryLocator start(Database.BatchableContext bc)
+	{
+		return AccountsSelector.newInstance().queryLocatorAll();
+	}
+
+	public void execute(Database.BatchableContext bc, List<SObject> scope)
+	{
+		AccountsService.recalculateRating((List<Account>) scope);
+	}
+
+	public void finish(Database.BatchableContext bc) { }
 }

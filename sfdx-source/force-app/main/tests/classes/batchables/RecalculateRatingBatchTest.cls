@@ -1,6 +1,5 @@
 /**
- * File Name: IAccountsService 
- * Description: 
+ * File Name: RecalculateRatingBatchTest 
  *
  * @author architect ir. Wilhelmus G.J. Velzeboer
  *
@@ -28,23 +27,36 @@
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public interface IAccountsService
+@IsTest
+private class RecalculateRatingBatchTest
 {
-	void copyShippingCountryToContacts(Set<Id> idSet);
-	void copyShippingCountryToContacts(List<Account> records);
-	void copyShippingCountryToContacts(List<Account> records, List<Contact> contacts);
-	void copyShippingCountryToContacts(IAccounts accounts);
-	void copyShippingCountryToContacts(IAccounts accounts, IContacts contacts);
-	void copyShippingCountryToContacts(fflib_ISObjectUnitOfWork unitOfWork, IAccounts accounts);
-	void copyShippingCountryToContacts(fflib_ISObjectUnitOfWork unitOfWork, IAccounts accounts, IContacts contacts);
+	@IsTest
+	static void testBehavior()
+	{
+        // GIVEN - An Account
+		insert new Account(Name = 'Dummy'); // we can't mock a QueryLocator so need insert records
 
-	void recalculateRating(Set<Id> accountIds);
-	void recalculateRating(List<Account> records);
-	void recalculateRating(IAccounts accounts);
-	void recalculateRating(fflib_ISObjectUnitOfWork unitOfWork, IAccounts accounts);
+        fflib_ApexMocks mocks = new fflib_ApexMocks();
+        IAccountsService serviceMock = (IAccountsService) mocks.mock(IAccountsService.class);
+        Application.Service.setMock(IAccountsService.class, serviceMock);
 
-	void setRating(Set<Id> ids, String rating);
-	void setRating(List<Account> records, String rating);
-	void setRating(IAccounts accounts, String rating);
-	void setRating(fflib_ISObjectUnitOfWork unitOfWork, IAccounts accounts, String rating);
+        // WHEN
+        System.Test.startTest();
+        RecalculateRatingBatch.execute();
+        System.Test.stopTest();
+
+        // THEN
+        ((IAccountsService) mocks.verify(serviceMock))
+                .recalculateRating(
+				        fflib_Match.sObjectsWith(
+						        new List<Map<SObjectField, Object>>
+						        {
+								        new Map<SObjectField, Object>
+								        {
+										        Account.Name => (Object) 'Dummy'
+								        }
+						        }
+				        )
+		        );
+    }
 }

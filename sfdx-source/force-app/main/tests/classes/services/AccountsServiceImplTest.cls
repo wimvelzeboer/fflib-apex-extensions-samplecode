@@ -34,55 +34,38 @@ private class AccountsServiceImplTest
 	@IsTest
 	static void testCopyShippingCountryToContacts()
 	{
-		// GIVEN
-		Id idA = fflib_IDGenerator.generate(Account.SObjectType);
-		Id idB = fflib_IDGenerator.generate(Account.SObjectType);
-		Id idC = fflib_IDGenerator.generate(Account.SObjectType);
-		Set<Id> accountIds = new Set<Id>{ idA, idB, idC };
-		Map<Id, String> shippingCountryByAccountId = new Map<Id, String>
-		{
-				idA => 'USA',
-				idB => 'Ireland',
-				idC => 'Holland'
-		};
-		List<Account> accountRecords = new List<Account>
-		{
-				new Account(Id = idA, Name = 'A', ShippingCountry = shippingCountryByAccountId.get(idA)),
-				new Account(Id = idB, Name = 'B', ShippingCountry = shippingCountryByAccountId.get(idB)),
-				new Account(Id = idC, Name = 'C', ShippingCountry = shippingCountryByAccountId.get(idC))
-		};
-		List<Contact> contactRecords = new List<Contact>
-		{
-				new Contact()
-		};
+		// GIVEN An account with contacts
+		Set<Id> accountIds = new Set<Id>{ fflib_IDGenerator.generate(Account.SObjectType) };
+		Map<Id, String> shippingCountryByAccountId = new Map<Id, String> ();
+		List<Account> accountRecords = new List<Account>();
+		List<Contact> contactRecords = new List<Contact>();
 
 		fflib_ApexMocks mocks = new fflib_ApexMocks();
 		IAccounts accountsDomainMock = (IAccounts) mocks.mock(IAccounts.class);
 		IContacts contactsDomainMock = (IContacts) mocks.mock(IContacts.class);
 		IContactsSelector contactsSelectorMock = (IContactsSelector) mocks.mock(IContactsSelector.class);
+		IAccountsSelector accountsSelectorMock = (IAccountsSelector) mocks.mock(IAccountsSelector.class);
 		fflib_ISObjectUnitOfWork unitOfWorkMock = new fflib_SObjectMocks.SObjectUnitOfWork(mocks);
 
 		mocks.startStubbing();
-		mocks.when(accountsDomainMock.getType()).thenReturn(Account.SObjectType);
 		mocks.when(accountsDomainMock.getShippingCountryById()).thenReturn(shippingCountryByAccountId);
+		mocks.when(accountsSelectorMock.selectSObjectsById(accountIds)).thenReturn(accountRecords);
 		mocks.when(accountsDomainMock.getRecordIds()).thenReturn(accountIds);
-		mocks.when(contactsSelectorMock.sObjectType()).thenReturn(Contact.SObjectType);
 		mocks.when(contactsSelectorMock.selectByAccountId(accountIds)).thenReturn(contactRecords);
-		mocks.when(contactsDomainMock.getType()).thenReturn(Contact.SObjectType);
 		mocks.when(contactsDomainMock.getRecords()).thenReturn(contactRecords);
 		mocks.stopStubbing();
 
-		Application.Domain.setMock(accountsDomainMock);
-		Application.Domain.setMock(contactsDomainMock);
-		Application.Selector.setMock(contactsSelectorMock);
+		Application.Domain.setMock(Schema.Account.SObjectType, accountsDomainMock);
+		Application.Domain.setMock(Schema.Contact.SObjectType, contactsDomainMock);
+		Application.Selector.setMock(Schema.Contact.SObjectType, contactsSelectorMock);
 		Application.UnitOfWork.setMock(unitOfWorkMock);
 
-		// WHEN
+		// WHEN We copy the shipping country to the contacts
 		System.Test.startTest();
-		AccountsService.copyShippingCountryToContacts(accountRecords);
+		AccountsService.copyShippingCountryToContacts(accountIds);
 		System.Test.stopTest();
 
-		// THEN the contact records should be updated
+		// THEN the contact shipping country should be retrieved from the account, set in the contacts and send to the database
 		((IAccounts) mocks.verify(accountsDomainMock)).getShippingCountryById();
 		((IAccounts) mocks.verify(accountsDomainMock)).getRecordIds();
 		((IContactsSelector) mocks.verify(contactsSelectorMock)).selectByAccountId(accountIds);

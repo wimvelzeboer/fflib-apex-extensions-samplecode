@@ -52,6 +52,10 @@ public with sharing class Application
 			new fflib_DynamicSelectorFactory(bindingResolver)
 					.setSharingMode(fflib_SharingMode.WithoutSharing);
 
+	public static final fflib_ISelectorFactory NoSharingSelector =
+			new fflib_DynamicSelectorFactory(bindingResolver)
+					.setSharingMode(fflib_SharingMode.InheritedSharing);
+
 	public static final fflib_IDomainFactory Domain =
 			new fflib_DynamicDomainFactory(bindingResolver, Selector);
 }
