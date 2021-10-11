@@ -55,6 +55,9 @@ public with sharing class AccountComponentController
 			// Make sure we have database roll-back
 			Database.rollback(savepoint);
 
+			// Save a log message
+			Application.Log.warning(e.getMessage());
+
 			// Translate the exception to something user friendly
 			AuraHandledException auraException = new AuraHandledException(e.getMessage());
 			auraException.setMessage(e.getStackTraceString());
@@ -83,6 +86,9 @@ public with sharing class AccountComponentController
 			// Make sure we have database roll-back
 			Database.rollback(savepoint);
 
+			// Save a log message
+			Application.Log.warning(e.getMessage());
+
 			// Translate the exception to something user friendly
 			AuraHandledException auraException = new AuraHandledException(e.getMessage());
 			auraException.setMessage(e.getStackTraceString());
@@ -109,6 +115,9 @@ public with sharing class AccountComponentController
 		{
 			// Make sure we have database roll-back
 			Database.rollback(savepoint);
+
+			// Save a log message
+			Application.Log.warning(e.getMessage());
 
 			// Translate the exception to something user friendly
 			AuraHandledException auraException = new AuraHandledException(e.getMessage());

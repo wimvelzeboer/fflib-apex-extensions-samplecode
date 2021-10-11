@@ -64,23 +64,27 @@ global with sharing class AccountRatingWebService
 		{
 			RestContext.response.statusCode = 401;
 			RestContext.response.responseBody = new ErrorResponse(CRUD_ERROR_MESSAGE).toBlob();
+			Application.Log.error(e);
 		}
 		// Unauthorised to Field
 		catch (fflib_SecurityUtils.FlsException e)
 		{
 			RestContext.response.statusCode = 401;
 			RestContext.response.responseBody = new ErrorResponse(FLS_ERROR_MESSAGE).toBlob();
+			Application.Log.error(e);
 		}
 		// JSON formatting error
 		catch (System.JSONException e)
 		{
 			RestContext.response.statusCode = 400;
 			RestContext.response.responseBody = new ErrorResponse(INVALID_FORMATTED_REQUEST).toBlob();
+			Application.Log.error(e);
 		}
 		catch (Exception e)
 		{
 			RestContext.response.statusCode = 400;
 			RestContext.response.responseBody = new ErrorResponse(UNHANDLED_EXCEPTION_OCCURRED).toBlob();
+			Application.Log.error(e);
 		}
 	}
 
@@ -118,23 +122,27 @@ global with sharing class AccountRatingWebService
 		{
 			RestContext.response.statusCode = 401;
 			RestContext.response.responseBody = new ErrorResponse(CRUD_ERROR_MESSAGE).toBlob();
+			Application.Log.error(e);
 		}
 		// Unauthorised to Field
 		catch (fflib_SecurityUtils.FlsException e)
 		{
 			RestContext.response.statusCode = 401;
 			RestContext.response.responseBody = new ErrorResponse(FLS_ERROR_MESSAGE).toBlob();
+			Application.Log.error(e);
 		}
 		// JSON formatting error
 		catch (System.JSONException e)
 		{
 			RestContext.response.statusCode = 400;
 			RestContext.response.responseBody = new ErrorResponse(INVALID_FORMATTED_REQUEST).toBlob();
+			Application.Log.error(e);
 		}
 		catch (Exception e)
 		{
 			RestContext.response.statusCode = 400;
 			RestContext.response.responseBody = new ErrorResponse(e.getMessage()).toBlob();
+			Application.Log.error(e);
 		}
 	}
 

@@ -58,4 +58,8 @@ public with sharing class Application
 
 	public static final fflib_IDomainFactory Domain =
 			new fflib_DynamicDomainFactory(bindingResolver, Selector);
+
+	public static final fflib_ILogger Log = new fflib_Logger()
+			.addAppender(new fflib_LogEventAppender());
+
 }

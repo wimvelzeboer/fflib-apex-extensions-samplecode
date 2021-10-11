@@ -52,6 +52,7 @@ public with sharing class AccountViewController
 		{
 			Database.rollback(savePoint);
 			ApexPages.addMessages(e);
+			Application.Log.warning(e.getMessage());
 		}
 		return null;
 	}
