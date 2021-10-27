@@ -31,5 +31,5 @@
 trigger Accounts on Account
 		(before insert, before update, before delete, after insert, after update, after delete, after undelete)
 {
-	fflib_SObjectDomain.triggerHandler(AccountsTriggerHandler.class);
+	new fflib_TriggerHandler().run();
 }
