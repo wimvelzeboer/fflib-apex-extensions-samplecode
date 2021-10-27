@@ -1,6 +1,6 @@
 /**
- * File Name: AccountsServiceImplTest 
- * Description: 
+ * File Name: AccountsServiceImplTest
+ * Description:
  *
  * @author architect ir. Wilhelmus G.J. Velzeboer
  *
@@ -35,7 +35,7 @@ private class AccountsServiceImplTest
 	static void testCopyShippingCountryToContacts()
 	{
 		// GIVEN An account with contacts
-		Set<Id> accountIds = new Set<Id>{ fflib_IDGenerator.generate(Account.SObjectType) };
+		Set<Id> accountIds = new Set<Id> {fflib_IDGenerator.generate(Account.SObjectType)};
 		Map<Id, String> shippingCountryByAccountId = new Map<Id, String> ();
 		List<Account> accountRecords = new List<Account>();
 		List<Contact> contactRecords = new List<Contact>();
@@ -77,7 +77,7 @@ private class AccountsServiceImplTest
 	static void testRecalculateRating()
 	{
 		// Given
-		List<Account> records = new List<Account>{new Account() };
+		List<Account> records = new List<Account> {new Account()};
 
 		fflib_ApexMocks mocks = new fflib_ApexMocks();
 		IAccounts domainMock = (IAccounts) mocks.mock(IAccounts.class);
@@ -88,6 +88,8 @@ private class AccountsServiceImplTest
 		mocks.when(domainMock.selectByNumberOfEmployeesGreaterThan(fflib_Match.anyInteger()))
 				.thenReturn(domainMock);
 		mocks.when(domainMock.selectByNumberOfEmployeesLessThan(fflib_Match.anyInteger()))
+				.thenReturn(domainMock);
+		mocks.when(domainMock.setRating(fflib_Match.anyString()))
 				.thenReturn(domainMock);
 		mocks.when(domainMock.getRecords()).thenReturn(records);
 		mocks.stopStubbing();
@@ -103,6 +105,6 @@ private class AccountsServiceImplTest
 		// THEN
 		((IAccounts) mocks.verify(domainMock)).selectByNumberOfEmployeesGreaterThan(99);
 		((IAccounts) mocks.verify(domainMock)).selectByNumberOfEmployeesLessThan(100);
-		((fflib_ISObjectUnitOfWork)	mocks.verify(unitOfWorkMock)).registerDirty(records);
+		((fflib_ISObjectUnitOfWork)	mocks.verify(unitOfWorkMock, 2)).registerDirty(records);
 	}
 }
