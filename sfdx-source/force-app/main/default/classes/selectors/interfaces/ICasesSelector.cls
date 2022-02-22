@@ -1,5 +1,5 @@
 /**
- * File Name: ICasesSelector 
+ * File Name: ICasesSelector
  * Description: Method signature definitions for Case selectors classes
  *
  * @author architect ir. Wilhelmus G.J. Velzeboer
@@ -30,5 +30,5 @@
  */
 public interface ICasesSelector extends fflib_ISObjectSelector
 {
-
+	List<Case> selectById(Set<Id> idSet);
 }

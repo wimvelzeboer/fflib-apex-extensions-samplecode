@@ -29,82 +29,91 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 @IsTest
-private class AccountsServiceImplTest
-{
-	@IsTest
-	static void testCopyShippingCountryToContacts()
-	{
-		// GIVEN An account with contacts
-		Set<Id> accountIds = new Set<Id> {fflib_IDGenerator.generate(Account.SObjectType)};
-		Map<Id, String> shippingCountryByAccountId = new Map<Id, String> ();
-		List<Account> accountRecords = new List<Account>();
-		List<Contact> contactRecords = new List<Contact>();
+private class AccountsServiceImplTest {
+    @IsTest
+    static void testCopyShippingCountryToContacts() {
+        // GIVEN An account with contacts
+        Set<Id> accountIds = new Set<Id>{
+                fflib_IDGenerator.generate(Account.SObjectType)
+        };
+        Map<Id, String> shippingCountryByAccountId = new Map<Id, String> ();
+        List<Account> accountRecords = new List<Account>();
+        List<Contact> contactRecords = new List<Contact>();
 
-		fflib_ApexMocks mocks = new fflib_ApexMocks();
-		IAccounts accountsDomainMock = (IAccounts) mocks.mock(IAccounts.class);
-		IContacts contactsDomainMock = (IContacts) mocks.mock(IContacts.class);
-		IContactsSelector contactsSelectorMock = (IContactsSelector) mocks.mock(IContactsSelector.class);
-		IAccountsSelector accountsSelectorMock = (IAccountsSelector) mocks.mock(IAccountsSelector.class);
-		fflib_ISObjectUnitOfWork unitOfWorkMock = new fflib_SObjectMocks.SObjectUnitOfWork(mocks);
+        fflib_ApexMocks mocks = new fflib_ApexMocks();
+        IAccounts accountsDomainMock = (IAccounts) mocks.mock(IAccounts.class);
+        IContacts contactsDomainMock = (IContacts) mocks.mock(IContacts.class);
+        IContactsSelector contactsSelectorMock = (IContactsSelector) mocks.mock(IContactsSelector.class);
+        IAccountsSelector accountsSelectorMock = (IAccountsSelector) mocks.mock(IAccountsSelector.class);
+        fflib_ISObjectUnitOfWork unitOfWorkMock = new fflib_SObjectMocks.SObjectUnitOfWork(mocks);
 
-		mocks.startStubbing();
-		mocks.when(accountsDomainMock.getShippingCountryById()).thenReturn(shippingCountryByAccountId);
-		mocks.when(accountsSelectorMock.selectSObjectsById(accountIds)).thenReturn(accountRecords);
-		mocks.when(accountsDomainMock.getRecordIds()).thenReturn(accountIds);
-		mocks.when(contactsSelectorMock.selectByAccountId(accountIds)).thenReturn(contactRecords);
-		mocks.when(contactsDomainMock.getRecords()).thenReturn(contactRecords);
-		mocks.stopStubbing();
+        mocks.startStubbing();
+        mocks.when(accountsDomainMock.getShippingCountryById()).thenReturn(shippingCountryByAccountId);
+        mocks.when(accountsSelectorMock.selectSObjectsById(accountIds)).thenReturn(accountRecords);
+        mocks.when(accountsDomainMock.getRecordIds()).thenReturn(accountIds);
+        mocks.when(contactsSelectorMock.selectByAccountId(accountIds)).thenReturn(contactRecords);
+        mocks.when(contactsDomainMock.getRecords()).thenReturn(contactRecords);
+        mocks.stopStubbing();
 
-		Application.Domain.setMock(Schema.Account.SObjectType, accountsDomainMock);
-		Application.Domain.setMock(Schema.Contact.SObjectType, contactsDomainMock);
-		Application.Selector.setMock(Schema.Contact.SObjectType, contactsSelectorMock);
-		Application.UnitOfWork.setMock(unitOfWorkMock);
+        Application.Domain.setMock(Schema.Account.SObjectType, accountsDomainMock);
+        Application.Domain.setMock(Schema.Contact.SObjectType, contactsDomainMock);
+        Application.Selector.setMock(Schema.Contact.SObjectType, contactsSelectorMock);
+        Application.UnitOfWork.setMock(unitOfWorkMock);
 
-		// WHEN We copy the shipping country to the contacts
-		System.Test.startTest();
-		AccountsService.copyShippingCountryToContacts(accountIds);
-		System.Test.stopTest();
+        // WHEN We copy the shipping country to the contacts
+        System.Test.startTest();
+        AccountsService.copyShippingCountryToContacts(accountIds);
+        System.Test.stopTest();
 
-		// THEN the contact shipping country should be retrieved from the account, set in the contacts and send to the database
-		((IAccounts) mocks.verify(accountsDomainMock)).getShippingCountryById();
-		((IAccounts) mocks.verify(accountsDomainMock)).getRecordIds();
-		((IContactsSelector) mocks.verify(contactsSelectorMock)).selectByAccountId(accountIds);
-		((IContacts) mocks.verify(contactsDomainMock)).setMailingCountryByAccountId(shippingCountryByAccountId);
-		((fflib_ISObjectUnitOfWork) mocks.verify(unitOfWorkMock)).registerDirty(contactRecords);
-	}
+        // THEN the contact shipping country should be retrieved from the account, set in the contacts and send to the database
+        ((IAccounts) mocks.verify(accountsDomainMock)).getShippingCountryById();
+        ((IAccounts) mocks.verify(accountsDomainMock)).getRecordIds();
+        ((IContactsSelector) mocks.verify(contactsSelectorMock)).selectByAccountId(accountIds);
+        ((IContacts) mocks.verify(contactsDomainMock)).setMailingCountryByAccountId(shippingCountryByAccountId);
 
-	@IsTest
-	static void testRecalculateRating()
-	{
-		// Given
-		List<Account> records = new List<Account> {new Account()};
+        ((fflib_ISObjectUnitOfWork)
+                mocks.verify(unitOfWorkMock,
+                        mocks
+                                .calls(1)
+								.never()
+                                .description('It should be invoked twice'))
+        )
+                .registerDirty(contactRecords);
+    }
 
-		fflib_ApexMocks mocks = new fflib_ApexMocks();
-		IAccounts domainMock = (IAccounts) mocks.mock(IAccounts.class);
-		fflib_ISObjectUnitOfWork unitOfWorkMock = new fflib_SObjectMocks.SObjectUnitOfWork(mocks);
+    @IsTest
+    static void testRecalculateRating() {
+        // Given
+        List<Account> records = new List<Account>{
+                new Account()
+        };
 
-		mocks.startStubbing();
-		mocks.when(domainMock.getType()).thenReturn(Account.SObjectType);
-		mocks.when(domainMock.selectByNumberOfEmployeesGreaterThan(fflib_Match.anyInteger()))
-				.thenReturn(domainMock);
-		mocks.when(domainMock.selectByNumberOfEmployeesLessThan(fflib_Match.anyInteger()))
-				.thenReturn(domainMock);
-		mocks.when(domainMock.setRating(fflib_Match.anyString()))
-				.thenReturn(domainMock);
-		mocks.when(domainMock.getRecords()).thenReturn(records);
-		mocks.stopStubbing();
+        fflib_ApexMocks mocks = new fflib_ApexMocks();
+        IAccounts domainMock = (IAccounts) mocks.mock(IAccounts.class);
+        fflib_ISObjectUnitOfWork unitOfWorkMock = new fflib_SObjectMocks.SObjectUnitOfWork(mocks);
 
-		Application.Domain.setMock(domainMock);
-		Application.UnitOfWork.setMock(unitOfWorkMock);
+        mocks.startStubbing();
+        mocks.when(domainMock.getType()).thenReturn(Account.SObjectType);
+        mocks.when(domainMock.selectByNumberOfEmployeesGreaterThan(fflib_Match.anyInteger()))
+                .thenReturn(domainMock);
+        mocks.when(domainMock.selectByNumberOfEmployeesLessThan(fflib_Match.anyInteger()))
+                .thenReturn(domainMock);
+        mocks.when(domainMock.setRating(fflib_Match.anyString()))
+                .thenReturn(domainMock);
+        mocks.when(domainMock.getRecords()).thenReturn(records);
+        mocks.stopStubbing();
 
-		// When
-		System.Test.startTest();
-		new AccountsServiceImpl().recalculateRating(unitOfWorkMock, domainMock);
-		System.Test.stopTest();
+        Application.Domain.setMock(domainMock);
+        Application.UnitOfWork.setMock(unitOfWorkMock);
 
-		// THEN
-		((IAccounts) mocks.verify(domainMock)).selectByNumberOfEmployeesGreaterThan(99);
-		((IAccounts) mocks.verify(domainMock)).selectByNumberOfEmployeesLessThan(100);
-		((fflib_ISObjectUnitOfWork)	mocks.verify(unitOfWorkMock, 2)).registerDirty(records);
-	}
+        // When
+        System.Test.startTest();
+        new AccountsServiceImpl().recalculateRating(unitOfWorkMock, domainMock);
+        System.Test.stopTest();
+
+        // THEN
+        ((IAccounts) mocks.verify(domainMock)).selectByNumberOfEmployeesGreaterThan(99);
+        ((IAccounts) mocks.verify(domainMock)).selectByNumberOfEmployeesLessThan(100);
+        ((fflib_ISObjectUnitOfWork) mocks.verify(unitOfWorkMock, 2)).registerDirty(records);
+    }
 }

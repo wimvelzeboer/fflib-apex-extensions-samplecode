@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Cases Service</label>
+    <protected>false</protected>
+    <values>
+        <field>BindingObjectAlternate__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>BindingObject__c</field>
+        <value xsi:type="xsd:string">Case</value>
+    </values>
+    <values>
+        <field>BindingSequence__c</field>
+        <value xsi:type="xsd:double">1.0</value>
+    </values>
+    <values>
+        <field>ImplementationType__c</field>
+        <value xsi:type="xsd:string">CasesServiceImpl</value>
+    </values>
+    <values>
+        <field>InterfaceType__c</field>
+        <value xsi:type="xsd:string">ICasesService</value>
+    </values>
+    <values>
+        <field>SharingMode__c</field>
+        <value xsi:type="xsd:string">With Sharing</value>
+    </values>
+    <values>
+        <field>Type__c</field>
+        <value xsi:type="xsd:string">Service</value>
+    </values>
+</CustomMetadata>

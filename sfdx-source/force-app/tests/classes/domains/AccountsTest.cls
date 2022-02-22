@@ -38,19 +38,21 @@ private class AccountsTest
 		Accounts domain = new Accounts(
 				new List<Account>
 				{
-						new Account(ShippingCountry = 'USA'),
-						new Account(ShippingCountry = 'Ireland'),
-						new Account(ShippingCountry = 'Holland')
+						new Account(ShippingCountry = 'USA', Id = fflib_IDGenerator.generate(Account.SObjectType)),
+						new Account(ShippingCountry = 'Ireland', Id = fflib_IDGenerator.generate(Account.SObjectType)),
+						new Account(ShippingCountry = '', Id = fflib_IDGenerator.generate(Account.SObjectType)),
+						new Account(ShippingCountry = 'Holland', Id = fflib_IDGenerator.generate(Account.SObjectType))
 				});
 
 		// WHEN we get the ShippingCountry values for the domain
 		System.Test.startTest();
-		Set<String> result = domain.getShippingCountries();
+		Map<Id, String> result = domain.getShippingCountryById();
 		System.Test.stopTest();
 
 		// THEN the values should be returned
-		System.assert(
-				result.containsAll(
+		System.debug('result:'+result);
+		System.assertEquals(3, result.size());
+		System.assert(new Set<String>(result.values()).containsAll(
 						new Set<String> {'USA', 'Ireland', 'Holland'}
 				)
 		);

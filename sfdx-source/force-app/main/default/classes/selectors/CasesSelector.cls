@@ -1,5 +1,5 @@
 /**
- * File Name: CasesSelector 
+ * File Name: CasesSelector
  * Description: Selector implementation for Case records
  *
  * @author architect ir. Wilhelmus G.J. Velzeboer
@@ -37,6 +37,26 @@ public virtual inherited sharing class CasesSelector
 		return (ICasesSelector) Application.Selector.newInstance(Schema.Case.SObjectType);
 	}
 
+	public static ICasesSelector newWithoutSharingInstance()
+	{
+		return (ICasesSelector) Application.ElevatedSelector.newInstance(Schema.Case.SObjectType);
+	}
+
+	public static ICasesSelector newInheritedSharingInstance()
+	{
+		return (ICasesSelector) Application.NoSharingSelector.newInstance(Schema.Case.SObjectType);
+	}
+
+	public CasesSelector()
+	{
+		super();
+	}
+
+	public CasesSelector(Boolean includeFieldSetFields, Boolean enforceCRUD, Boolean enforceFLS)
+	{
+		super(includeFieldSetFields, enforceCRUD, enforceFLS);
+	}
+
 	public List<Schema.SObjectField> getSObjectFieldList()
 	{
 		return new List<Schema.SObjectField>
@@ -51,11 +71,39 @@ public virtual inherited sharing class CasesSelector
 
 	public Schema.SObjectType getSObjectType()
 	{
-		return Case.SObjectType;
+		return Schema.Case.SObjectType;
 	}
 
-	public List<Case> selectById(Set<Id> idSet)
+	public virtual List<Case> selectById(Set<Id> idSet)
 	{
 		return (List<Case>) selectSObjectsById(idSet);
+	}
+
+	public with sharing class WithSharing extends CasesSelector
+	{
+		// Constructor that will enforce CRUD and FLS
+		public WithSharing()
+		{
+			super(true, true, true);
+		}
+
+		public override List<Case> selectById(Set<Id> idSet)
+		{
+			return super.selectById(idSet);
+		}
+	}
+
+	public without sharing class WithoutSharing extends CasesSelector
+	{
+		// Constructor that will enforce CRUD and FLS
+		public WithoutSharing()
+		{
+			super(true, false, false);
+		}
+
+		public override List<Case> selectById(Set<Id> idSet)
+		{
+			return super.selectById(idSet);
+		}
 	}
 }

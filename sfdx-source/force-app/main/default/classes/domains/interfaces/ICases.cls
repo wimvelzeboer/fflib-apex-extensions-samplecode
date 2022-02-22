@@ -1,7 +1,4 @@
 /**
- * File Name: Application
- * Description: generates instances of the application components
- *
  * @author architect ir. Wilhelmus G.J. Velzeboer
  *
  * Copyright (c), W.G.J. Velzeboer,
@@ -28,38 +25,11 @@
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public with sharing class Application
+public interface ICases
+		extends fflib_ISObjects
 {
-	private static fflib_IAppBindingResolver bindingResolver = new fflib_AppBindingResolver();
+	List<Case> getCases();
+	ICases selectById(Set<Id> ids);
 
-	public static final fflib_IUnitOfWorkFactory UnitOfWork =
-			new fflib_ClassicUnitOfWorkFactory(
-					new List<SObjectType>
-					{
-							Schema.Account.SObjectType,
-							Schema.Contact.SObjectType,
-							Schema.Case.SObjectType
-					}
-			);
-
-	public static final fflib_IServiceFactory Service =
-			new fflib_DynamicServiceFactory(bindingResolver)
-					.setSharingMode(fflib_SharingMode.WithSharing);
-
-	public static final fflib_ISelectorFactory Selector =
-			new fflib_DynamicSelectorFactory(bindingResolver);
-
-	public static final fflib_ISelectorFactory ElevatedSelector =
-			new fflib_DynamicSelectorFactory(bindingResolver)
-					.setSharingMode(fflib_SharingMode.WithoutSharing);
-
-	public static final fflib_ISelectorFactory NoSharingSelector =
-			new fflib_DynamicSelectorFactory(bindingResolver)
-					.setSharingMode(fflib_SharingMode.InheritedSharing);
-
-	public static final fflib_IDomainFactory Domain =
-			new fflib_DynamicDomainFactory(bindingResolver, Selector);
-
-	public static final fflib_ILogger Log = new fflib_Logger()
-			.addAppender(new fflib_LogEventAppender());
+	ICases setStatus(String status);
 }
