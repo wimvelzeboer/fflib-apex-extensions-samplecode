@@ -74,9 +74,8 @@ private class AccountsServiceImplTest {
         ((fflib_ISObjectUnitOfWork)
                 mocks.verify(unitOfWorkMock,
                         mocks
-                                .calls(1)
-								.never()
-                                .description('It should be invoked twice'))
+                                .times(1)
+                                .description('It should be invoked once'))
         )
                 .registerDirty(contactRecords);
     }
