@@ -27,11 +27,22 @@
  */
 public with sharing class CasesService
 {
+	/**
+	 * Reopens case records by changing the status into "New"
+	 *
+	 * @param caseIds Set of Case Ids to reopen
+	 */
 	public static void reOpen(Set<Id> caseIds)
 	{
 		service().reOpen(caseIds);
 	}
 
+	/**
+	 * Reopens case records by changing the status into "New"
+	 *
+	 * @param unitOfWork Instance of fflib_ISObjectUnitOfWork
+	 * @param caseIds Set of Case Ids to reopen
+	 */
 	public static void reOpen(fflib_ISObjectUnitOfWork unitOfWork, Set<Id> caseIds)
 	{
 		service().reOpen(unitOfWork, caseIds);

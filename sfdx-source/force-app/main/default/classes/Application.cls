@@ -60,6 +60,15 @@ public with sharing class Application
 	public static final fflib_IDomainFactory Domain =
 			new fflib_DynamicDomainFactory(bindingResolver, Selector);
 
+	public static final fflib_IServiceFactory Factory =
+			new fflib_ClassicServiceFactory(
+					new Map<Type, Type>
+					{
+							ICasesFactory.class => CasesFactoryImpl.class,
+							IContactsFactory.class => ContactsFactoryImpl.class
+					}
+			);
+
 	public static final fflib_ILogger Log = new fflib_Logger()
 			.addAppender(new fflib_LogEventAppender());
 }
