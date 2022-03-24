@@ -215,7 +215,7 @@ public virtual inherited sharing class ContactsSelector
 	 * Generated the following query:
 	 * ------------------------------
 	 * SELECT AccountId, Birthdate, DoNotCall, Email, FirstName, HasOptedOutOfEmail, Id, LastName,
-	 *       (SELECT CaseNumber, Id, Priority, Status, Subject FROM Cases ORDER BY CaseNumber ASC NULLS FIRST )
+	 *       (SELECT CaseNumber, Id, Priority, Status, Subject FROM Cases WHERE Status = 'New' ORDER BY CaseNumber ASC NULLS FIRST )
 	 * FROM Contact
 	 * WHERE Id in :idSet
 	 * ORDER BY Name ASC NULLS FIRST
@@ -227,13 +227,13 @@ public virtual inherited sharing class ContactsSelector
 		((fflib_SObjectSelector) CasesSelector.newInstance())
 				.addQueryFactorySubselect(
 				queryFactory,
-				'Case'
+				'Cases'
+		)
+				.setCondition('Status = \'New\'');
 
-		);
-
-		return (List<Contact>) Database.query(
-				queryFactory.setCondition('Id in :idSet').toSOQL()
-		);
+		String query = queryFactory.setCondition('Id in :idSet').toSOQL();
+		System.debug(query);
+		return (List<Contact>) Database.query(query);
 	}
 
 	/**
