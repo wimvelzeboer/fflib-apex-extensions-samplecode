@@ -42,7 +42,7 @@ public with sharing class Accounts
 	// Method to create new domain instances via record Ids
 	public static IAccounts newInstance(Set<Id> ids)
 	{
-		return (IAccounts) Application.Domain.newInstance(ids, Schema.Account.SObjectType);
+		return (IAccounts) Application.Domain.newInstance(ids);
 	}
 
 	// Method to create new domain instances via records
@@ -58,7 +58,7 @@ public with sharing class Accounts
 
 	public fflib_Strings getRating()
 	{
-		return getStringFieldValues(Schema.Account.Rating);
+		return new fflib_Strings(getStringFieldValues(Schema.Account.Rating));
 	}
 
 	public Set<String> getShippingCountries()

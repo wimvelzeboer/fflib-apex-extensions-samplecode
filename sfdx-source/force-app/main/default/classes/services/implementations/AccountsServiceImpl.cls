@@ -34,7 +34,7 @@ public with sharing class AccountsServiceImpl
 	public void copyShippingCountryToContacts(Set<Id> accountIds)
 	{
 		copyShippingCountryToContacts(
-				(IAccounts) Application.Domain.newInstance(accountIds, Schema.Account.SObjectType)
+				(IAccounts) Application.Domain.newInstance(accountIds)
 		);
 	}
 

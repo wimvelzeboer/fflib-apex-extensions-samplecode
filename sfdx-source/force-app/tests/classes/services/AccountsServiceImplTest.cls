@@ -71,13 +71,9 @@ private class AccountsServiceImplTest {
         ((IContactsSelector) mocks.verify(contactsSelectorMock)).selectByAccountId(accountIds);
         ((IContacts) mocks.verify(contactsDomainMock)).setMailingCountryByAccountId(shippingCountryByAccountId);
 
-        ((fflib_ISObjectUnitOfWork)
-                mocks.verify(unitOfWorkMock,
-                        mocks
-                                .times(1)
-                                .description('It should be invoked once'))
-        )
-                .registerDirty(contactRecords);
+        ((fflib_ISObjectUnitOfWork) mocks.verify(unitOfWorkMock,
+                mocks.description('Records should be send to the unitOfWork'))
+        ).registerDirty(contactRecords);
     }
 
     @IsTest

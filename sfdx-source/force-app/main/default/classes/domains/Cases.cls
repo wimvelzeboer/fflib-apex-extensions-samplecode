@@ -36,7 +36,7 @@ public inherited sharing class Cases
 
 	public static ICases newInstance(Set<Id> ids)
 	{
-		return (ICases) Application.Domain.newInstance(ids, Schema.Case.SObjectType);
+		return (ICases) Application.Domain.newInstance(ids);
 	}
 
 	public Cases(List<Case> records)
