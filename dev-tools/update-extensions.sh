@@ -20,11 +20,14 @@ cd $PROJECT_ROOT/temp
 rm -Rf fflib-apex-extensions/
 
 echoStepMsg "Downloading latest version of fflib-apex-extensions from GitHub"
+git clone https://github.com/apex-enterprise-patterns/fflib-apex-mocks.git
+git clone https://github.com/apex-enterprise-patterns/fflib-apex-common.git
 git clone https://github.com/wimvelzeboer/fflib-apex-extensions.git
 
 echoStepMsg "Deploying fflib-apex-extensions to $SCRATCH_ORG_ALIAS scratch org"
+sfdx force:source:deploy -p ./fflib-apex-mocks/sfdx-source -u $SCRATCH_ORG_ALIAS
+sfdx force:source:deploy -p ./fflib-apex-common/sfdx-source -u $SCRATCH_ORG_ALIAS
 sfdx force:source:deploy -p ./fflib-apex-extensions/sfdx-source -u $SCRATCH_ORG_ALIAS
-
 
 echoStepMsg "Cleaning up"
 rm -Rf fflib-apex-mocks/

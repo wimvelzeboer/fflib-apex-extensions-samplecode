@@ -28,13 +28,13 @@
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public with sharing class Accounts
+public virtual with sharing class Accounts
 		extends fflib_SObjects2
 		implements IAccounts
 {
 	// Class constructor
 	@TestVisible
-	private Accounts(List<SObject> records)
+	protected Accounts(List<SObject> records)
 	{
 		super(records, Schema.Account.SObjectType);
 	}
@@ -63,12 +63,7 @@ public with sharing class Accounts
 
 	public Set<String> getShippingCountries()
 	{
-		Set<String> result = new Set<String>();
-		for (Account record : getAccounts())
-		{
-			result.add(record.ShippingCountry);
-		}
-		return result;
+		return getStringFieldValues(Account.ShippingCountry);
 	}
 
 	public Map<Id, String> getShippingCountryById()

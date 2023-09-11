@@ -3,6 +3,10 @@
     <label>Contacts Selector</label>
     <protected>false</protected>
     <values>
+        <field>ApplicationPackage__c</field>
+        <value xsi:type="xsd:string">force_app</value>
+    </values>
+    <values>
         <field>BindingObjectAlternate__c</field>
         <value xsi:nil="true"/>
     </values>
@@ -16,7 +20,7 @@
     </values>
     <values>
         <field>ImplementationType__c</field>
-        <value xsi:type="xsd:string">ContactsSelector.WithSharing</value>
+        <value xsi:type="xsd:string">ContactsSelector</value>
     </values>
     <values>
         <field>InterfaceType__c</field>

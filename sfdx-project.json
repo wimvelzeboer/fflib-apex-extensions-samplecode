@@ -3,6 +3,10 @@
     {
       "path": "sfdx-source/force-app",
       "default": true
+    },
+    {
+      "path": "sfdx-source/other-app",
+      "default": false
     }
   ],
   "name": "apex-extension-samplecode",

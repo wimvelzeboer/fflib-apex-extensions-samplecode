@@ -28,33 +28,37 @@
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public virtual inherited sharing class CasesSelector
+public virtual without sharing class CasesSelector
 		extends fflib_SObjectSelector
 		implements ICasesSelector
 {
+	/**
+	 * Runs the query in User Mode, respecting FLS, CRUD & sharing rules
+	 *
+	 * @return New instance of the selector
+	 */
 	public static ICasesSelector newInstance()
 	{
-		return (ICasesSelector) Application.Selector.newInstance(Schema.Case.SObjectType);
+		return (ICasesSelector)
+				((fflib_SObjectSelector) Application.Selector.newInstance(Schema.Case.SObjectType))
+						.setDataAccess(fflib_SObjectSelector.DataAccess.USER_MODE);
 	}
 
-	public static ICasesSelector newWithoutSharingInstance()
+	/**
+	 * Runs the query in System Mode, disabling FLS, CRUD & sharing rules
+	 *
+	 * @return New instance of the selector
+	 */
+	public static ICasesSelector newElevatedInstance()
 	{
-		return (ICasesSelector) Application.ElevatedSelector.newInstance(Schema.Case.SObjectType);
-	}
-
-	public static ICasesSelector newInheritedSharingInstance()
-	{
-		return (ICasesSelector) Application.NoSharingSelector.newInstance(Schema.Case.SObjectType);
+		return (ICasesSelector)
+				((fflib_SObjectSelector) Application.Selector.newInstance(Schema.Case.SObjectType))
+						.setDataAccess(fflib_SObjectSelector.DataAccess.SYSTEM_MODE);
 	}
 
 	public CasesSelector()
 	{
 		super();
-	}
-
-	public CasesSelector(Boolean includeFieldSetFields, Boolean enforceCRUD, Boolean enforceFLS)
-	{
-		super(includeFieldSetFields, enforceCRUD, enforceFLS);
 	}
 
 	public List<Schema.SObjectField> getSObjectFieldList()
@@ -77,33 +81,5 @@ public virtual inherited sharing class CasesSelector
 	public virtual List<Case> selectById(Set<Id> idSet)
 	{
 		return (List<Case>) selectSObjectsById(idSet);
-	}
-
-	public with sharing class WithSharing extends CasesSelector
-	{
-		// Constructor that will enforce CRUD and FLS
-		public WithSharing()
-		{
-			super(true, true, true);
-		}
-
-		public override List<Case> selectById(Set<Id> idSet)
-		{
-			return super.selectById(idSet);
-		}
-	}
-
-	public without sharing class WithoutSharing extends CasesSelector
-	{
-		// Constructor that will enforce CRUD and FLS
-		public WithoutSharing()
-		{
-			super(true, false, false);
-		}
-
-		public override List<Case> selectById(Set<Id> idSet)
-		{
-			return super.selectById(idSet);
-		}
 	}
 }

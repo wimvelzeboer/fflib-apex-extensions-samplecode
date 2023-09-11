@@ -32,19 +32,28 @@ public virtual inherited sharing class ContactsSelector
 		extends fflib_SObjectSelector
 		implements IContactsSelector
 {
+	/**
+	 * Runs the query in User Mode, respecting FLS, CRUD & sharing rules
+	 *
+	 * @return New instance of the selector
+	 */
 	public static IContactsSelector newInstance()
 	{
-		return (IContactsSelector) Application.Selector.newInstance(Schema.Contact.SObjectType);
+		return (IContactsSelector)
+				((fflib_SObjectSelector) Application.Selector.newInstance(Schema.Contact.SObjectType))
+						.setDataAccess(fflib_SObjectSelector.DataAccess.USER_MODE);
 	}
 
-	public static IContactsSelector newWithoutSharingInstance()
+	/**
+	 * Runs the query in System Mode, disabling FLS, CRUD & sharing rules
+	 *
+	 * @return New instance of the selector
+	 */
+	public static IContactsSelector newElevatedInstance()
 	{
-		return (IContactsSelector) Application.ElevatedSelector.newInstance(Schema.Contact.SObjectType);
-	}
-
-	public static IContactsSelector newWithSharingInstance()
-	{
-		return (IContactsSelector) Application.ElevatedSelector.newInstance(Schema.Contact.SObjectType);
+		return (IContactsSelector)
+				((fflib_SObjectSelector) Application.Selector.newInstance(Schema.Contact.SObjectType))
+						.setDataAccess(fflib_SObjectSelector.DataAccess.SYSTEM_MODE);
 	}
 
 	public ContactsSelector()
@@ -52,17 +61,12 @@ public virtual inherited sharing class ContactsSelector
 		super();
 	}
 
-	public ContactsSelector(Boolean includeFieldSetFields, Boolean enforceCRUD, Boolean enforceFLS)
-	{
-		super(includeFieldSetFields, enforceCRUD, enforceFLS);
-	}
-
 	/**
 	 * Holds a list of fields to be returned by all selectors methods
 	 *
 	 * @return Returns list of default Contact fields
 	 */
-	public List<Schema.SObjectField> getSObjectFieldList()
+	public virtual List<Schema.SObjectField> getSObjectFieldList()
 	{
 		return new List<Schema.SObjectField>
 		{
@@ -77,7 +81,7 @@ public virtual inherited sharing class ContactsSelector
 		};
 	}
 
-	public List<Schema.SObjectField> getSObjectPartnerFieldList()
+	public virtual List<Schema.SObjectField> getSObjectPartnerFieldList()
 	{
 		return new List<Schema.SObjectField>
 		{
@@ -265,102 +269,5 @@ public virtual inherited sharing class ContactsSelector
 		);
 
 		return ContactsFactory.generatePartnerContacts(result);
-	}
-
-	/**
-	 * Sub class construct to instantiate a selectors with CRUD and FLS sharing enforced
-	 * <p/>
-	 * The methods in this class only override all the selectors methods and invoke its super,
-	 * so that the logic is execute in the "with sharing" context.
-	 */
-	public with sharing class WithSharing extends ContactsSelector
-	{
-		// Constructor that will enforce CRUD and FLS
-		public WithSharing()
-		{
-			super(
-					true, // Include field set felds
-					true, // enforce CRUD
-					true // enforce FLS
-			);
-		}
-
-		public override List<Contact> selectById(Set<Id> idSet)
-		{
-			return super.selectById(idSet);
-		}
-
-		public override List<Contact> selectByAccountId(Set<Id> accountIds)
-		{
-			return super.selectByAccountId(accountIds);
-		}
-
-		public override List<Contact> selectByLeadSource(Set<String> leadSources)
-		{
-			return super.selectByLeadSource(leadSources);
-		}
-
-		public override List<Contact> selectByIdWithAccount(Set<Id> idSet)
-		{
-			return super.selectByIdWithAccount(idSet);
-		}
-
-		public override List<Contact> selectByIdWithCases(Set<Id> idSet)
-		{
-			return super.selectByIdWithCases(idSet);
-		}
-
-		public override List<PartnerContact> selectPartnersById(Set<Id> idSet)
-		{
-			return super.selectPartnersById(idSet);
-		}
-	}
-
-	/**
-	 * Sub class construct to instantiate a selectors that is run without any sharing rules
-	 * <p/>
-	 * The methods in this class only override all the selectors methods and invoke its super,
-	 * so that the logic is execute in the "without sharing" context.
-	 */
-	public without sharing class WithoutSharing extends ContactsSelector
-	{
-		public WithoutSharing()
-		{
-			super(
-					true, // Include field set felds
-					false, // enforce CRUD
-					false // enforce FLS
-			);
-		}
-
-		public override List<Contact> selectById(Set<Id> idSet)
-		{
-			return super.selectById(idSet);
-		}
-
-		public override List<Contact> selectByLeadSource(Set<String> leadSources)
-		{
-			return super.selectByLeadSource(leadSources);
-		}
-
-		public override List<Contact> selectByIdWithAccount(Set<Id> idSet)
-		{
-			return super.selectByIdWithAccount(idSet);
-		}
-
-		public override List<Contact> selectByIdWithCases(Set<Id> idSet)
-		{
-			return super.selectByIdWithCases(idSet);
-		}
-
-		public override List<PartnerContact> selectPartnersById(Set<Id> idSet)
-		{
-			return super.selectPartnersById(idSet);
-		}
-
-		public override List<Contact> selectByAccountId(Set<Id> accountIds)
-		{
-			return super.selectByAccountId(accountIds);
-		}
 	}
 }

@@ -28,18 +28,42 @@
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-public virtual with sharing class AccountsSelector
+public virtual without sharing class AccountsSelector
 		extends fflib_SObjectSelector
 		implements IAccountsSelector
 {
+	/**
+	 * Runs the query in User Mode, respecting FLS, CRUD & sharing rules
+	 *
+	 * @return New instance of the selector
+	 */
 	public static IAccountsSelector newInstance()
 	{
-		return (IAccountsSelector) Application.Selector.newInstance(Schema.Account.SObjectType);
+		return (IAccountsSelector)
+				((fflib_SObjectSelector) Application.Selector.newInstance(Schema.Account.SObjectType))
+				.setDataAccess(fflib_SObjectSelector.DataAccess.USER_MODE);
 	}
 
-	public List<Schema.SObjectField> getSObjectFieldList()
+	/**
+	 * Runs the query in System Mode, disabling FLS, CRUD & sharing rules
+	 *
+	 * @return New instance of the selector
+	 */
+	public static IAccountsSelector newElevatedInstance()
 	{
-		return new List<Schema.SObjectField>
+		return (IAccountsSelector)
+				((fflib_SObjectSelector) Application.Selector.newInstance(Schema.Account.SObjectType))
+						.setDataAccess(fflib_SObjectSelector.DataAccess.SYSTEM_MODE);
+	}
+
+	public AccountsSelector()
+	{
+		super();
+	}
+
+	public virtual List<Schema.SObjectField> getSObjectFieldList()
+	{
+		List<SObjectField> sObjectFields = new List<Schema.SObjectField>
 		{
 				Account.Id,
 				Account.AccountNumber,
@@ -48,6 +72,7 @@ public virtual with sharing class AccountsSelector
 				Account.Rating,
 				Account.ShippingCountry
 		};
+		return sObjectFields;
 	}
 
 	public Schema.SObjectType getSObjectType()
@@ -55,12 +80,12 @@ public virtual with sharing class AccountsSelector
 		return Account.SObjectType;
 	}
 
-	public List<Account> selectById(Set<Id> idSet)
+	public virtual List<Account> selectById(Set<Id> idSet)
 	{
 		return (List<Account>) selectSObjectsById(idSet);
 	}
 
-	public Database.QueryLocator queryLocatorAll()
+	public virtual Database.QueryLocator queryLocatorAll()
 	{
 		return Database.getQueryLocator(
 				newQueryFactory().toSOQL()

@@ -30,35 +30,28 @@
  */
 public with sharing class Application
 {
-	private static fflib_IAppBindingResolver bindingResolver = new fflib_AppBindingResolver();
+	public static final String NAME = 'force_app';
+
+	public static fflib_IAppBindingResolver bindingResolver = new fflib_AppBindingResolver();
+
+	public final static List<SObjectType> UNIT_OF_WORK_HIERARCHY = new List<SObjectType>
+	{
+		Schema.Account.SObjectType,
+		Schema.Contact.SObjectType,
+		Schema.Case.SObjectType
+	};
 
 	public static final fflib_ClassicUnitOfWorkFactory UnitOfWork =
-			new fflib_ClassicUnitOfWorkFactory(
-					new List<SObjectType>
-					{
-							Schema.Account.SObjectType,
-							Schema.Contact.SObjectType,
-							Schema.Case.SObjectType
-					}
-			);
+			new fflib_ClassicUnitOfWorkFactory(UNIT_OF_WORK_HIERARCHY);
 
 	public static final fflib_DynamicServiceFactory Service =
-			new fflib_DynamicServiceFactory(bindingResolver)
-					.setSharingMode(fflib_SharingMode.WithSharing);
+			new fflib_DynamicServiceFactory(bindingResolver, NAME);
 
 	public static final fflib_DynamicSelectorFactory Selector =
-			new fflib_DynamicSelectorFactory(bindingResolver);
-
-	public static final fflib_DynamicSelectorFactory ElevatedSelector =
-			new fflib_DynamicSelectorFactory(bindingResolver)
-					.setSharingMode(fflib_SharingMode.WithoutSharing);
-
-	public static final fflib_DynamicSelectorFactory NoSharingSelector =
-			new fflib_DynamicSelectorFactory(bindingResolver)
-					.setSharingMode(fflib_SharingMode.InheritedSharing);
+			new fflib_DynamicSelectorFactory(bindingResolver, NAME);
 
 	public static final fflib_DynamicDomainFactory Domain =
-			new fflib_DynamicDomainFactory(bindingResolver, Selector);
+			new fflib_DynamicDomainFactory(bindingResolver, Selector, NAME);
 
 	public static final fflib_ClassicServiceFactory Factory =
 			new fflib_ClassicServiceFactory(
