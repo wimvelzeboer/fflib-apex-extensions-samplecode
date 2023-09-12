@@ -3,6 +3,10 @@
     <label>Accounts Domain</label>
     <protected>false</protected>
     <values>
+        <field>ApplicationPackage__c</field>
+        <value xsi:type="xsd:string">other_app</value>
+    </values>
+    <values>
         <field>BindingObjectAlternate__c</field>
         <value xsi:nil="true"/>
     </values>

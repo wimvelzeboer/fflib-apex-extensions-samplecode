@@ -27,10 +27,6 @@
         <value xsi:nil="true"/>
     </values>
     <values>
-        <field>SharingMode__c</field>
-        <value xsi:type="xsd:string">With Sharing</value>
-    </values>
-    <values>
         <field>Type__c</field>
         <value xsi:type="xsd:string">Selector</value>
     </values>

@@ -25,10 +25,7 @@
     <values>
         <field>InterfaceType__c</field>
         <value xsi:nil="true"/>
-    </values>
-    <values>
-        <field>SharingMode__c</field>
-        <value xsi:type="xsd:string">None</value>
+    </values> xsi:type="xsd:string">None</value>
     </values>
     <values>
         <field>Type__c</field>
