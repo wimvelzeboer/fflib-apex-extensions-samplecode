@@ -82,7 +82,7 @@ public virtual without sharing class AccountsSelector
 
 	public virtual List<Account> selectById(Set<Id> idSet)
 	{
-		return (List<Account>) selectSObjectsById(idSet);
+		return (List<Account>) newQueryFactory().setCondition('id in :idSet').toSOQL();
 	}
 
 	public virtual Database.QueryLocator queryLocatorAll()

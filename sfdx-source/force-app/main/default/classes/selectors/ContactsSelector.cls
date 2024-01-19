@@ -104,7 +104,7 @@ public virtual inherited sharing class ContactsSelector
 
 	public virtual List<Contact> selectById(Set<Id> idSet)
 	{
-		return (List<Contact>) selectSObjectsById(idSet);
+		return (List<Contact>) newQueryFactory().setCondition('id in :idSet').toSOQL();
 	}
 
 

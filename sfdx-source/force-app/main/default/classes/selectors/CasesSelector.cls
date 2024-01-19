@@ -80,6 +80,6 @@ public virtual without sharing class CasesSelector
 
 	public virtual List<Case> selectById(Set<Id> idSet)
 	{
-		return (List<Case>) selectSObjectsById(idSet);
+		return (List<Case>) newQueryFactory().setCondition('id in :idSet').toSOQL();
 	}
 }
